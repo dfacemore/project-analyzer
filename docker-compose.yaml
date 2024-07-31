@@ -45,6 +45,8 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT}
       - ZOOKEEPER_TICK_TIME=${ZOOKEEPER_TICK_TIME}
+    env_file:
+      - .env-docker
     ports:
       - '2181:2181'
     volumes:
@@ -62,6 +64,8 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS}
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    env_file:
+      - .env-docker
     ports:
       - '9092:9092'
     volumes:
@@ -72,7 +76,7 @@ services:
     networks:
       - appl
     env_file:
-      - dockerps/.env
+      - .env-docker
     ports:
       - '5437:5432'
     command:
