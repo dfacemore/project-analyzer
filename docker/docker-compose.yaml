@@ -14,7 +14,7 @@ volumes:
 
 services:
   generator:
-    image: 'dfacemore/project-generator:latest'
+    image: dfacemore/project-generator:latest
     networks:
       - app
     depends_on:
@@ -22,11 +22,13 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
       - KAFKA_SUBSCRIBED_TOPICS=${KAFKA_SUBSCRIBED_TOPICS}
+    env_file:
+      - .env
     ports:
       - '8081:8081'
 
-  analyser:
-    image: 'dfacemore/data-analyser:latest'
+  analyzer:
+    image: dfacemore/project-analyzer:latest
     networks:
       - app
     depends_on:
@@ -39,23 +41,27 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env
     ports:
       - '8082:8082'
 
   zookeeper:
-    image: 'confluentinc/cp-zookeeper:latest'
+    image: confluentinc/cp-zookeeper:latest
     networks:
       - app
     environment:
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT}
       - ZOOKEEPER_TICK_TIME=${ZOOKEEPER_TICK_TIME}
+    env_file:
+      - .env
     ports:
       - '2181:2181'
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
 
   kafka:
-    image: 'confluentinc/cp-kafka:latest'
+    image: confluentinc/cp-kafka:latest
     networks:
       - app
     depends_on:
@@ -66,17 +72,19 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS}
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    env_file:
+      - .env
     ports:
       - '9092:9092'
     volumes:
       - kafka-data:/var/lib/kafka/data
 
   postgres:
-    image: 'postgres:15.7-bullseye'
+    image: postgres:16
     networks:
       - app
     env_file:
-      - .env-docker
+      - .env
     ports:
       - '5437:5432'
     command:
